@@ -20,7 +20,7 @@
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
-  (q/background 240)
+  ; (q/background 240)
   ; Set circle color.
   (q/fill (:color state) 255 255)
   ; Calculate x and y coordinates of the circle.
@@ -31,12 +31,12 @@
     (q/with-translation [(/ (q/width) 2)
                          (/ (q/height) 2)]
                         ; Draw the circle.
-                        (q/ellipse x y 100 100))))
+                        (q/ellipse x y 20 20))))
 
 (q/defsketch
   alfa
   :host "alfa"
-  :size [500 1000]
+  :size [1000 500]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.

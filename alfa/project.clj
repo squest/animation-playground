@@ -9,11 +9,10 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [quil "2.2.6"]]
 
-  :plugins [[lein-cljsbuild "1.1.0"]
+  :plugins [[lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.4.1"]]
 
   :source-paths ["src"]
-  :hooks [leiningen.cljsbuild]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {:builds [{:id "dev"
