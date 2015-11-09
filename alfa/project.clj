@@ -5,33 +5,33 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.clojure/clojurescript "1.7.122"]
-                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
+                 [org.clojure/clojurescript "1.7.170"]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [quil "2.2.6"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]]
 
   :source-paths ["src"]
-
+  :hooks [leiningen.cljsbuild]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :cljsbuild {
-    :builds [{:id "dev"
-              :source-paths ["src"]
+  :cljsbuild {:builds [{:id "dev"
+                        :source-paths ["src"]
 
-              :figwheel { :on-jsload "alfa.core/on-js-reload" }
+                        :figwheel { :on-jsload "alfa.core/on-js-reload" }
 
-              :compiler {:main alfa.core
-                         :asset-path "js/compiled/out"
-                         :output-to "resources/public/js/compiled/alfa.js"
-                         :output-dir "resources/public/js/compiled/out"
-                         :source-map-timestamp true }}
-             {:id "min"
-              :source-paths ["src"]
-              :compiler {:output-to "resources/public/js/compiled/alfa.js"
-                         :main alfa.core
-                         :optimizations :advanced
-                         :pretty-print false}}]}
+                        :compiler {:main alfa.core
+                                   :asset-path "js/compiled/out"
+                                   :output-to "resources/public/js/compiled/alfa.js"
+                                   :output-dir "resources/public/js/compiled/out"
+                                   :source-map-timestamp true }}
+                       {:id "min"
+                        :source-paths ["src"]
+                        :compiler {:output-to "resources/public/js/compiled/alfa.js"
+                                   :main alfa.core
+                                   :optimizations :advanced
+                                   :pretty-print false}}]}
 
   :figwheel {
              ;; :http-server-root "public" ;; default and assumes "resources" 
