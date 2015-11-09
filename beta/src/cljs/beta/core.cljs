@@ -21,35 +21,41 @@
   (q/frame-rate 30)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
+  (q/background 210)
   ; setup function returns initial state. It contains
   ; circle color and position.
   {:color 0
-   :angle 0})
+   :vx 80
+   :vy 0
+   :sx 50
+   :sy 400})
 
-(defn update-state [state]
+(defn update-state
+  [state]
   ; Update sketch state by changing circle color and position.
-  {:color (mod (+ (:color state) 0.7) 255)
-   :angle (+ (:angle state) 0.1)})
+  (let [{:keys [vx vy sx sy]} state
+        g -20 t 0.1]
+    {:color (mod (+ (:color state) 0.7) 255)
+     :vx    vx
+     :vy (+ vy (* g t))
+     :sx (+ sx (* vx t))
+     :sy (+ sy (* vy t))}))
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
-  ; (q/background 240)
+  (q/background 210)
   ; Set circle color.
   (q/fill (:color state) 255 255)
   ; Calculate x and y coordinates of the circle.
-  (let [angle (:angle state)
-        x (* 150 (q/cos angle))
-        y (* 150 (q/sin angle))]
+  (let [{:keys [sx sy vx vy]} state]
     ; Move origin point to the center of the sketch.
-    (q/with-translation [(/ (q/width) 2)
-                         (/ (q/height) 2)]
-                        ; Draw the circle.
-                        (q/ellipse x y 20 20))))
+    (q/text (str "Vx = " vx " Sy = " sy) 1000 50)
+    (q/ellipse sx (- 450 sy) 30 30)))
 
 (q/defsketch
   beta
   :host "beta"
-  :size [1000 500]
+  :size [1160 1500]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
