@@ -16,41 +16,55 @@
   (re-frame/dispatch-sync [:initialize-db])
   (mount-root))
 
+;;; PENTING
 (defn setup []
   ; Set frame rate to 30 frames per second.
   (q/frame-rate 30)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
-  (q/background 210)
+  (q/background 244)
   ; setup function returns initial state. It contains
   ; circle color and position.
-  {:color 0
-   :vx 80
-   :vy 0
-   :sx 50
-   :sy 400})
+  (for [angle (range 2 90 1.5)]
+    (let [v 120]
+      {:color (* 10 angle)
+       :vx    (* v (q/cos (q/radians angle)))
+       :vy    (* v (q/sin (q/radians angle)))
+       :t     0
+       :sx 5
+       :sy 0
+       :sxo    5
+       :syo   0})))
 
 (defn update-state
   [state]
   ; Update sketch state by changing circle color and position.
-  (let [{:keys [vx vy sx sy]} state
-        g -20 t 0.1]
-    {:color (mod (+ (:color state) 0.7) 255)
-     :vx    vx
-     :vy (+ vy (* g t))
-     :sx (+ sx (* vx t))
-     :sy (+ sy (* vy t))}))
+  (let [g -20]
+    (if (> (:t (first state)) 15)
+      (q/exit)
+      (for [{:keys [sxo syo vx vy sx sy t color]} state]
+        (let [res {:color color
+                   :t     (+ 0.05 t)
+                   :vx    vx
+                   :vy    vy
+                   :sx    (+ sxo (* vx t))
+                   :sy    (+ syo (* vy t) (* 0.5 g t t))
+                   :sxo   sxo
+                   :syo   syo}]
+          (if (< syo 0)
+            (merge res {:t 0 :sxo sx :syo sy :sx sx :sy sy})
+            res))))))
 
 (defn draw-state [state]
   ; Clear the sketch by filling it with light-grey color.
-  (q/background 210)
+  ; (q/background 210)
   ; Set circle color.
-  (q/fill (:color state) 255 255)
+  (do (q/stroke 100)
+      (q/line 20 450 1200 450))
   ; Calculate x and y coordinates of the circle.
-  (let [{:keys [sx sy vx vy]} state]
-    ; Move origin point to the center of the sketch.
-    (q/text (str "Vx = " vx " Sy = " sy) 1000 50)
-    (q/ellipse sx (- 450 sy) 30 30)))
+  (doseq [{:keys [sx sy color]} state]
+    (q/fill color 255 255)
+    (q/ellipse sx (- 450 (q/abs sy)) 2 2)))
 
 (q/defsketch
   beta
@@ -66,6 +80,8 @@
   ; fun-mode.
   :middleware [m/fun-mode])
 
+;; penting
+
 (enable-console-print!)
 
 (println "Edits to this text should show up in your developer console.")
@@ -74,9 +90,6 @@
 
 
 (defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-  )
+  (js/alert "woi"))
 
 
